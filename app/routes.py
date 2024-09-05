@@ -30,7 +30,7 @@ def handle_webhook():
         message = f"{author} pushed to {to_branch} on {timestamp}"
     
     elif 'pull_request' in data and data['action'] == 'opened':
-        request_id = data['pull_request']['id']
+        request_id = str(data['pull_request']['id'])
         author = data['pull_request']['user']['login']
         from_branch = data['pull_request']['head']['ref']
         to_branch = data['pull_request']['base']['ref']
@@ -40,13 +40,14 @@ def handle_webhook():
             "request_id" : request_id,
             "author" : author,
             "action" : action,
+            "from_branch" : from_branch,
             "to_branch" : to_branch,
             "timestamp" : timestamp
         }
         message = f"{author} submitted a pull request from {from_branch} to {to_branch} on {timestamp}"
     
     elif 'pull_request' in data and data['action'] == 'closed' and data['pull_request']['merged']:
-        request_id = data['pull_request']['id']
+        request_id = str(data['pull_request']['id'])
         author = data['pull_request']['user']['login']
         from_branch = data['pull_request']['head']['ref']
         to_branch = data['pull_request']['base']['ref']
