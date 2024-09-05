@@ -1,6 +1,7 @@
-from flask import Blueprint, request, jsonify, json
-from .models import ActionSchema
+from flask import Blueprint, request, jsonify, json, render_template
 from pymongo import MongoClient
+# from dateutil import parser
+from .models import ActionSchema
 from .env import MONGO_DB_URI
 
 client = MongoClient(MONGO_DB_URI)
@@ -11,10 +12,10 @@ main = Blueprint('main', __name__)
 
 @main.route('/webhook', methods=['POST'])
 def handle_webhook():
-    data = request.json
+    data = request.json 
 
     record = {}
-    
+
     if 'pusher' in data and 'head_commit' in data:
         request_id = data['head_commit']['id']
         author = data['pusher']['name']
@@ -67,16 +68,18 @@ def handle_webhook():
     schema = ActionSchema()
     entry = schema.load(record)
     collection.insert_one(entry)
-    print(message)
-
     return jsonify({"status": "success", "message": "Entry recorded in Mongo DB"})
 
 @main.route('/fetch', methods=['GET'])
 def fetch_actions():
-    dataset = collection.find({})
+    dataset = collection.find({}).sort({"timestamp":-1})
     response = []
     for data in dataset:
         response.append(data)
-    print(response)
     return json.dumps({"response":response},default = str)
+
+
+@main.route('/view', methods=['GET'])
+def create_view():
+    return render_template('index.html')
 
