@@ -1,8 +1,9 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, json
 from .models import ActionSchema
 from pymongo import MongoClient
+from .env import MONGO_DB_URI
 
-client = MongoClient("mongodb+srv://srg12114:BSOIcHCbRqK5IYvZ@pesto.rpntnje.mongodb.net/?retryWrites=true&w=majority&appName=Pesto", )
+client = MongoClient(MONGO_DB_URI)
 db = client['TechStax']
 collection = db['actions']
 
@@ -68,5 +69,14 @@ def handle_webhook():
     collection.insert_one(entry)
     print(message)
 
-    return jsonify({"status": "success", "message": message})
+    return jsonify({"status": "success", "message": "Entry recorded in Mongo DB"})
+
+@main.route('/fetch', methods=['GET'])
+def fetch_actions():
+    dataset = collection.find({})
+    response = []
+    for data in dataset:
+        response.append(data)
+    print(response)
+    return json.dumps({"response":response},default = str)
 
