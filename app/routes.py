@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, json, render_template, session
 from pymongo import MongoClient
+from datetime import datetime
 from .models import ActionSchema
 from .env import MONGO_DB_URI
 
@@ -19,7 +20,7 @@ def handle_webhook():
         request_id = data['head_commit']['id']
         author = data['pusher']['name']
         to_branch = data['ref'].split('/')[-1]
-        timestamp = data['head_commit']['timestamp']
+        timestamp = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         action = "PUSH"
         record = {
             "request_id" : request_id,
@@ -35,7 +36,7 @@ def handle_webhook():
         author = data['pull_request']['user']['login']
         from_branch = data['pull_request']['head']['ref']
         to_branch = data['pull_request']['base']['ref']
-        timestamp = data['pull_request']['created_at']
+        timestamp = datetime.now().strftime("%m/%d/%Y, %H:%M:%S %z")
         action = "PULL_REQUEST"
         record = {
             "request_id" : request_id,
@@ -52,7 +53,7 @@ def handle_webhook():
         author = data['pull_request']['user']['login']
         from_branch = data['pull_request']['head']['ref']
         to_branch = data['pull_request']['base']['ref']
-        timestamp = data['pull_request']['merged_at']
+        timestamp = datetime.now().strftime("%m/%d/%Y, %H:%M:%S %z")
         action = "MERGE"
         record = {
             "request_id" : request_id,
