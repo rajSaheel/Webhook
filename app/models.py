@@ -6,4 +6,4 @@ class ActionSchema(Schema):
     action = fields.Str(required=True,validate=validate.OneOf(['PUSH','PULL_REQUEST','MERGE']))
     from_branch = fields.Str()
     to_branch = fields.Str()
-    timestamp = fields.Str(required=True)
+    timestamp = fields.DateTime('%Y-%m-%dT%H:%M:%S+05:30')
