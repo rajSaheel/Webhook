@@ -76,7 +76,7 @@ def fetch_actions():
     response = []
     for data in dataset:
         response.append(data)
-    return json.dumps({"response":response,"pivot":response[0]["timestamp"]},default = str)
+    return json.dumps({"response":response},default = str)
 
 
 @main.route('/view', methods=['GET'])

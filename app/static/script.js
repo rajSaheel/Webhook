@@ -2,6 +2,11 @@ const url = `http://127.0.0.1:5000/fetch`
 const list = document.querySelector("#action-list")
 const audio = document.querySelector("#audio")
 const alertBtn = document.querySelector(".notification-btn")
+const colors = {
+    PUSH: "#4CAF50",
+    PULL_REQUEST: "#2196F3",
+    MERGE: "#FFC107",
+}
 
 let actions = []
 let notificationState = false
@@ -21,6 +26,12 @@ const fetchActions = async () => {
                 const actionInfo = document.createElement("p")
                 actionInfo.textContent = getMessage(action)
                 actionItem.appendChild(actionInfo)
+                const actionId = document.createElement("p")
+                actionId.textContent = `Request Id: ${action.request_id}`
+                actionItem.appendChild(actionId)
+                actionItem.style.borderLeft = `5px solid ${
+                    colors[action.action]
+                }`
                 list.appendChild(actionItem)
             }
             if (notificationState) audio.play()
