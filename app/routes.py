@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, json, render_template
+from flask import Blueprint, request, jsonify, json, render_template, session
 from pymongo import MongoClient
 # from dateutil import parser
 from .models import ActionSchema
@@ -12,7 +12,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/webhook', methods=['POST'])
 def handle_webhook():
-    data = request.json 
+    data = request.json
 
     record = {}
 
@@ -76,7 +76,7 @@ def fetch_actions():
     response = []
     for data in dataset:
         response.append(data)
-    return json.dumps({"response":response},default = str)
+    return json.dumps({"response":response,"pivot":response[0]["timestamp"]},default = str)
 
 
 @main.route('/view', methods=['GET'])
