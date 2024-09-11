@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ error_code }} Error</title>
+        <style>
+            body {
+                text-align: center;
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                color: #333;
+            }
+            .error-container {
+                margin-top: 100px;
+            }
+            h1 {
+                font-size: 80px;
+            }
+            p {
+                font-size: 24px;
+            }
+            a {
+                color: #337ab7;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="error-container">
+            <h1>{{ error_code }}</h1>
+            <p>{{ error_message }}</p>
+            <p><a href="/">Go back to the homepage</a></p>
+        </div>
+    </body>
+</html>

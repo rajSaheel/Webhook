@@ -1,41 +1,48 @@
-const url = `http://127.0.0.1:5000/fetch`
+const urlFetchAll = `http://127.0.0.1:5000/fetch?count=all`
+const urlFetchRecent = `http://127.0.0.1:5000/fetch`
 const list = document.querySelector("#action-list")
 const audio = document.querySelector("#audio")
 const alertBtn = document.querySelector(".notification-btn")
+const pages = document.querySelector(".pages")
 const colors = {
     PUSH: "#4CAF50",
     PULL_REQUEST: "#2196F3",
     MERGE: "#FFC107",
 }
 
+// states
 let actions = []
 let notificationState = false
-const fetchActions = async () => {
+let currentPage = 1
+let count = 0
+
+const fetchActions = async (url) => {
     try {
         const response = await fetch(url)
         const data = await response.json()
-        if (JSON.stringify(actions) != JSON.stringify(data.response)) {
-            actions = data.response
-            list.innerHTML = ""
-            for (let action of actions) {
-                const actionItem = document.createElement("div")
-                actionItem.classList.add("action-item")
-                const actionTitle = document.createElement("h3")
-                actionTitle.textContent = action.action
-                actionItem.appendChild(actionTitle)
-                const actionInfo = document.createElement("p")
-                actionInfo.textContent = getMessage(action)
-                actionItem.appendChild(actionInfo)
-                const actionId = document.createElement("p")
-                actionId.textContent = `Request Id: ${action.request_id}`
-                actionItem.appendChild(actionId)
-                actionItem.style.borderLeft = `5px solid ${
-                    colors[action.action]
-                }`
-                list.appendChild(actionItem)
-            }
-            if (notificationState) audio.play()
+        if (data.count > 0) {
+            count += data.count
+            updatePagination(count)
         }
+        actions = data.actions
+        newList = document.createElement("div")
+        for (let action of actions) {
+            const actionItem = document.createElement("div")
+            actionItem.classList.add("action-item")
+            const actionTitle = document.createElement("h3")
+            actionTitle.textContent = action.action
+            actionItem.appendChild(actionTitle)
+            const actionInfo = document.createElement("p")
+            actionInfo.textContent = getMessage(action)
+            actionItem.appendChild(actionInfo)
+            const actionId = document.createElement("p")
+            actionId.textContent = `Request Id: ${action.request_id}`
+            actionItem.appendChild(actionId)
+            actionItem.style.borderLeft = `5px solid ${colors[action.action]}`
+            newList.appendChild(actionItem)
+        }
+        list.innerHTML = newList.innerHTML + list.innerHTML
+        if (notificationState) audio.play()
     } catch (e) {
         console.log(e)
         alert("Error fetching GitHub Actions")
@@ -75,6 +82,17 @@ alertBtn.addEventListener("click", () => {
     }
 })
 
-setInterval(() => fetchActions(), 15000)
+const updatePagination = (count) => {
+    let totalPages = Number.parseInt(count / 10 + 1)
+    pages.innerHTML = ""
+    for (let i = 0; i < totalPages && i < 5; i++) {
+        const page = document.createElement("span")
+        page.classList.add("page-no")
+        page.textContent = currentPage + i
+        pages.appendChild(page)
+    }
+}
 
-fetchActions()
+setInterval(() => fetchActions(urlFetchRecent), 15000)
+
+fetchActions(urlFetchAll)

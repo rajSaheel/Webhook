@@ -73,3 +73,13 @@ h1 {
 .notification-btn:focus {
     outline: none;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.page-no {
+    cursor: pointer;
+    padding: 5px 10px;
+}
