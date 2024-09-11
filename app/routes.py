@@ -2,8 +2,12 @@ from flask import Blueprint, request, jsonify, json, render_template
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 from .models import ActionSchema
-from .env import MONGO_DB_URI
-from bson import json_util
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+MONGO_DB_URI = os.getenv('MONGO_DB_URI')
 
 client = MongoClient(MONGO_DB_URI)
 db = client['TechStax']
@@ -76,7 +80,7 @@ def fetch_actions():
             time = lapse.strftime(format="%d/%m/%Y, %H:%M:%S")
             actions = [data for data in collection.find({"timestamp":{"$gt":time}}).sort({"timestamp":-1})]
             count = len(actions)
-        return json.dumps({"actions":actions,"count":count}, default = str)
+        return json.dumps({"actions":actions,"count":count,"query":query if query == "all" else "recent"}, default = str)
     except Exception as e:
         return jsonify({"status":"failed","message":"error in fetching data","error":e})
 

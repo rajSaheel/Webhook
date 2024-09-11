@@ -82,4 +82,12 @@ h1 {
 .page-no {
     cursor: pointer;
     padding: 5px 10px;
+    border: 1px solid #218838;
+    border-radius: 2px;
+    margin: 2px;
+}
+
+.page-active {
+    color: white;
+    background-color: #218838;
 }
